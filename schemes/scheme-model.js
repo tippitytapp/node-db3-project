@@ -6,6 +6,7 @@ module.exports={
     findSteps,
     add,
     addStep,
+    update,
     remove
 }
 
@@ -44,8 +45,13 @@ function addStep(stepData, id){
             })
 }
 
-function update(){
-
+function update(changes, id){
+    return Schemes('schemes')
+            .where({id})
+            .update(changes, "id")
+            .then(count => {
+                return findById(id[0])
+            })
 }
 
 function remove(id){
@@ -53,9 +59,13 @@ function remove(id){
             .where({id})
             .first()
             .then(scheme => {
+                const deletedObj = scheme
                 return Schemes('schemes')
                         .where({id:scheme.id})
                         .first()
                         .del()
+                        .then(count => {
+                            return deletedObj;
+                        })
             })
 }
